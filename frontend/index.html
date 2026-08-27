@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusTrade AI — Alpaca Multi-Agent Autonomous Quantitative Trading Swarm</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Top Global Header -->
+    <header class="app-header">
+        <div class="brand-section">
+            <div class="brand-badge">
+                <span class="pulsing-dot"></span>
+                <span class="brand-title">NexusTrade<span class="highlight">.AI</span></span>
+            </div>
+            <span class="hackathon-tag">Alpaca AI Trading Agents Swarm</span>
+        </div>
+
+        <div class="ticker-ribbon" id="tickerRibbon">
+            <div class="ticker-item" data-symbol="NVDA"><span class="ticker-symbol">NVDA</span> <span class="ticker-price">$128.50</span> <span class="ticker-chg up">+2.4%</span></div>
+            <div class="ticker-item" data-symbol="AAPL"><span class="ticker-symbol">AAPL</span> <span class="ticker-price">$224.20</span> <span class="ticker-chg up">+0.8%</span></div>
+            <div class="ticker-item" data-symbol="TSLA"><span class="ticker-symbol">TSLA</span> <span class="ticker-price">$215.60</span> <span class="ticker-chg down">-1.2%</span></div>
+            <div class="ticker-item" data-symbol="SPY"><span class="ticker-symbol">SPY</span> <span class="ticker-price">$560.10</span> <span class="ticker-chg up">+0.4%</span></div>
+            <div class="ticker-item" data-symbol="BTC-USD"><span class="ticker-symbol">BTC-USD</span> <span class="ticker-price">$63,450</span> <span class="ticker-chg up">+3.1%</span></div>
+        </div>
+
+        <div class="header-controls">
+            <button id="toggleAutonomousBtn" class="btn btn-autonomous">
+                <span class="status-indicator"></span>
+                <span id="autonomousLabel">Autonomous Swarm: OFF</span>
+            </button>
+            <div class="account-pill">
+                <span class="account-label">Paper Account</span>
+                <span class="account-balance" id="headerEquity">$100,000.00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Quantitative Workspace -->
+    <main class="main-layout">
+        <!-- Left Column: Chart & Agent Consensus Stream -->
+        <section class="left-panel">
+            <div class="card chart-card">
+                <div class="card-header">
+                    <div class="asset-selector">
+                        <span class="section-title">Market Terminal</span>
+                        <div class="pill-group" id="symbolPills">
+                            <button class="pill active" data-symbol="NVDA">NVDA</button>
+                            <button class="pill" data-symbol="AAPL">AAPL</button>
+                            <button class="pill" data-symbol="TSLA">TSLA</button>
+                            <button class="pill" data-symbol="SPY">SPY</button>
+                            <button class="pill" data-symbol="BTC-USD">BTC-USD</button>
+                        </div>
+                    </div>
+                    <div class="live-price-badge">
+                        <span id="activePrice" class="active-price">$128.50</span>
+                        <span id="activeSignal" class="badge badge-bullish">BUY CONVICTION</span>
+                    </div>
+                </div>
+
+                <div class="chart-canvas-container">
+                    <canvas id="priceChart" width="800" height="300"></canvas>
+                </div>
+
+                <div class="indicators-bar">
+                    <div class="ind-pill">RSI (14): <strong id="indRsi">58.4</strong></div>
+                    <div class="ind-pill">EMA 20: <strong id="indEma20">$127.10</strong></div>
+                    <div class="ind-pill">EMA 50: <strong id="indEma50">$125.80</strong></div>
+                    <div class="ind-pill">MACD Hist: <strong id="indMacd">+0.42</strong></div>
+                    <div class="ind-pill">Bollinger Upper: <strong id="indBBU">$132.40</strong></div>
+                    <div class="ind-pill">Bollinger Lower: <strong id="indBBL">$124.00</strong></div>
+                </div>
+            </div>
+
+            <!-- Multi-Agent Consensus Breakdown -->
+            <div class="card swarm-card">
+                <div class="card-header">
+                    <span class="section-title">Multi-Agent Swarm Reasoning & Deliberation</span>
+                    <button class="btn btn-sm btn-secondary" id="triggerSwarmScan">⚡ Run Swarm Scan</button>
+                </div>
+                
+                <div class="swarm-grid">
+                    <!-- Technical Agent -->
+                    <div class="agent-box">
+                        <div class="agent-box-header">
+                            <span class="agent-name">📊 Technical Analyst</span>
+                            <span class="agent-score" id="agentTechScore">+0.70</span>
+                        </div>
+                        <ul class="reasoning-list" id="techReasoningList">
+                            <li>Golden EMA Cross (EMA20 > EMA50) indicates bullish continuation.</li>
+                            <li>RSI is healthy at 58.4, leaving headroom for expansion.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Sentiment Agent -->
+                    <div class="agent-box">
+                        <div class="agent-box-header">
+                            <span class="agent-name">📰 Sentiment & Catalyst Agent</span>
+                            <span class="agent-score" id="agentSentScore">+0.62</span>
+                        </div>
+                        <div id="sentReasoning" class="agent-text">High institutional catalyst velocity following next-gen silicon release.</div>
+                        <div class="headlines-container" id="newsHeadlines"></div>
+                    </div>
+
+                    <!-- Risk Sentinel Agent -->
+                    <div class="agent-box">
+                        <div class="agent-box-header">
+                            <span class="agent-name">🛡️ Risk Sentinel (VaR & Sizing)</span>
+                            <span class="agent-score badge-pass">PASSED</span>
+                        </div>
+                        <div class="risk-metrics">
+                            <div>1-Day 95% VaR: <strong id="varDisplay">$1,420.00</strong></div>
+                            <div>Max Position Cap: <strong>25.0% Equity</strong></div>
+                            <div>Trailing Stop Rec: <strong id="stopLossDisplay" class="text-danger">$123.36</strong></div>
+                            <div>Take Profit Rec: <strong id="takeProfitDisplay" class="text-success">$138.78</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Consensus Banner -->
+                <div class="consensus-banner" id="consensusBanner">
+                    <div class="consensus-icon">🤖</div>
+                    <div class="consensus-details">
+                        <div class="consensus-headline" id="consensusHeadline">Swarm Consensus: BUY (82.5% Conviction)</div>
+                        <div class="consensus-sub" id="consensusSub">Technical and Sentiment scores are strongly aligned with risk limits verified.</div>
+                    </div>
+                    <button class="btn btn-primary" id="executeConsensusOrder">⚡ Execute Swarm Order</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Column: Execution, Portfolio & Backtester -->
+        <section class="right-panel">
+            <!-- Tabs Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="tradeTab">Trade Dispatch</button>
+                <button class="tab-btn" data-tab="portfolioTab">Portfolio</button>
+                <button class="tab-btn" data-tab="backtestTab">Backtester</button>
+            </div>
+
+            <!-- Tab 1: Trade Dispatch -->
+            <div class="tab-content active" id="tradeTab">
+                <div class="card">
+                    <h3 class="card-title">Direct Order Routing</h3>
+                    <div class="form-group">
+                        <label>Asset Symbol</label>
+                        <input type="text" id="orderSymbol" value="NVDA" class="input-field" readonly>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Order Action</label>
+                            <select id="orderSide" class="input-field">
+                                <option value="BUY">BUY / LONG</option>
+                                <option value="SELL">SELL / SHORT</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity (Shares)</label>
+                            <input type="number" id="orderQty" value="10" min="1" class="input-field">
+                        </div>
+                    </div>
+                    <div class="order-summary-box">
+                        <div class="summary-row"><span>Estimated Cost:</span> <strong id="orderEstCost">$1,285.00</strong></div>
+                        <div class="summary-row"><span>Route:</span> <span>Alpaca Paper Gateway (Instant)</span></div>
+                    </div>
+                    <button class="btn btn-primary btn-block" id="submitOrderBtn">Submit to Execution Engine</button>
+                    
+                    <div class="risk-audit-log" id="orderResultBox" style="display: none;"></div>
+                </div>
+
+                <div class="card mt-16">
+                    <h3 class="card-title">Recent Executions</h3>
+                    <div class="table-container">
+                        <table class="data-table" id="ordersTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Symbol</th>
+                                    <th>Side</th>
+                                    <th>Qty</th>
+                                    <th>Fill Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Rendered dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Portfolio -->
+            <div class="tab-content" id="portfolioTab">
+                <div class="card">
+                    <h3 class="card-title">Portfolio Performance</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-label">Total Equity</span>
+                            <span class="stat-value" id="portTotalEquity">$100,000.00</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Cash Reserves</span>
+                            <span class="stat-value" id="portCash">$100,000.00</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Total P&L</span>
+                            <span class="stat-value text-success" id="portTotalPL">+$0.00 (+0.0%)</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Buying Power</span>
+                            <span class="stat-value" id="portBuyingPower">$200,000.00</span>
+                        </div>
+                    </div>
+
+                    <h4 class="sub-heading mt-16">Open Positions</h4>
+                    <div class="table-container">
+                        <table class="data-table" id="positionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Qty</th>
+                                    <th>Avg Entry</th>
+                                    <th>Market Val</th>
+                                    <th>Unrealized P&L</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Rendered dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Backtester -->
+            <div class="tab-content" id="backtestTab">
+                <div class="card">
+                    <h3 class="card-title">Strategy Historical Backtest Engine</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Strategy Model</label>
+                            <select id="backtestStrategy" class="input-field">
+                                <option value="MULTI_AGENT_SWARM">Multi-Agent Swarm (Adaptive Alpha)</option>
+                                <option value="MOMENTUM_RSI">Momentum RSI + EMA Cross</option>
+                                <option value="BUY_AND_HOLD">Benchmark (Buy & Hold)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Period (Days)</label>
+                            <select id="backtestDays" class="input-field">
+                                <option value="90">90 Days</option>
+                                <option value="180" selected>180 Days</option>
+                                <option value="365">1 Year</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-block" id="runBacktestBtn">⚡ Execute Backtest</button>
+
+                    <!-- Backtest Results Visualizer -->
+                    <div id="backtestResults" class="backtest-results-container mt-16" style="display: none;">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <span class="stat-label">CAGR</span>
+                                <span class="stat-value text-success" id="btCagr">+28.4%</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-label">Sharpe Ratio</span>
+                                <span class="stat-value" id="btSharpe">2.15</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-label">Max Drawdown</span>
+                                <span class="stat-value text-danger" id="btMaxDD">-6.2%</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-label">Win Rate</span>
+                                <span class="stat-value text-success" id="btWinRate">74.2%</span>
+                            </div>
+                        </div>
+
+                        <div class="chart-canvas-container mt-16">
+                            <canvas id="backtestChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
